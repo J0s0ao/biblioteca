@@ -106,35 +106,54 @@ void listar_usuarios(ListaUsuario* lista_usuario) {
     }
 }
 
-Usuario** buscar_usuario_por_nome(ListaUsuario* lista_usuario, char* pesquisa) {
-    int capacidade = 10;
-    int quantidade = 0;
-    Usuario** resultados = (Usuario**)malloc(capacidade * sizeof(Usuario*));
+void listar_usuario(ListaUsuario* lista_usuario, int codigo) {
+    ListaUsuario* atual = lista_usuario;
 
+    while (atual != NULL) {
+        if (atual->usuario->codigo == codigo) {
+            printf("Código: %d, Nome: %s\n", atual->usuario->codigo, atual->usuario->nome);
+            return;
+        }
+        atual = atual->proximo;
+    }
+}
+
+Usuario** buscar_usuario_por_nome(ListaUsuario* lista_usuario, char* pesquisa) {
+    if (lista_usuario == NULL || pesquisa == NULL) {
+        return NULL;
+    }
+
+    int quantidade = 0;
+    Usuario** resultados = (Usuario**)malloc(sizeof(Usuario*));
     if (resultados == NULL) {
-        printf("Erro ao alocar memória para os resultados.\n");
         return NULL;
     }
 
     ListaUsuario* atual = lista_usuario;
-
     while (atual != NULL) {
         if (strstr(atual->usuario->nome, pesquisa) != NULL) {
-            if (quantidade >= capacidade - 1) {
-                capacidade *= 2;
-                Usuario** temp = (Usuario**)realloc(resultados, capacidade * sizeof(Usuario*));
-                if (temp == NULL) {
-                    printf("Erro ao realocar memória.\n");
-                    free(resultados);
-                    return NULL;
-                }
-                resultados = temp;
+            Usuario** novo_resultados = (Usuario**)realloc(resultados, (quantidade + 2) * sizeof(Usuario*));
+            if (novo_resultados == NULL) {
+                free(resultados);
+                return NULL;
             }
+            resultados = novo_resultados;
             resultados[quantidade++] = atual->usuario;
         }
         atual = atual->proximo;
     }
 
+    if (quantidade == 0) {
+        free(resultados);
+        return NULL;
+    }
+
     resultados[quantidade] = NULL;
     return resultados;
 }
+
+
+
+
+
+    
