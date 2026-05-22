@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "livro.h"
 
 struct livro
@@ -30,6 +31,26 @@ ListaLivro* criar_livro(ListaLivro* lista_livro, int codigo, char* titulo, char*
         return NULL;
     }
     novo_livro->livro->codigo = codigo;
+    // Copia campos de texto com segurança
+    if (titulo) {
+        strncpy(novo_livro->livro->titulo, titulo, sizeof(novo_livro->livro->titulo) - 1);
+        novo_livro->livro->titulo[sizeof(novo_livro->livro->titulo) - 1] = '\0';
+    } else {
+        novo_livro->livro->titulo[0] = '\0';
+    }
+    if (autor) {
+        strncpy(novo_livro->livro->autor, autor, sizeof(novo_livro->livro->autor) - 1);
+        novo_livro->livro->autor[sizeof(novo_livro->livro->autor) - 1] = '\0';
+    } else {
+        novo_livro->livro->autor[0] = '\0';
+    }
+    if (ano_publicacao) {
+        strncpy(novo_livro->livro->ano_publicacao, ano_publicacao, sizeof(novo_livro->livro->ano_publicacao) - 1);
+        novo_livro->livro->ano_publicacao[sizeof(novo_livro->livro->ano_publicacao) - 1] = '\0';
+    } else {
+        novo_livro->livro->ano_publicacao[0] = '\0';
+    }
+
     novo_livro->livro->quantidade_disponivel = quantidade_disponivel;
     novo_livro->livro->quantidade_emprestada = quantidade_emprestada;
 
@@ -43,7 +64,7 @@ ListaLivro* remover_livro(ListaLivro* lista, int codigo) {
     ListaLivro* anterior = NULL;
     ListaLivro* atual = lista;
 
-    while( atual != NULL && lista->livro->codigo != codigo) {
+    while (atual != NULL && (atual->livro == NULL || atual->livro->codigo != codigo)) {
         anterior = atual;
         atual = atual->proximo;
     }
@@ -58,23 +79,84 @@ ListaLivro* remover_livro(ListaLivro* lista, int codigo) {
         anterior->proximo = atual->proximo;
     }
     
-    free(atual->livro);
+    if (atual->livro != NULL) {
+        free(atual->livro);
+    }
     free(atual);
     return lista;
 }
 
 //Editar livro
-ListaLivro* editar_livro(ListaLivro* lista, int codigo, char* titulo, char* autor, char* ano_publicacao, int quantidade_disponivel, int quantidade_emprestada) {
-    ListaLivro* atual = lista;
+int editar_livro(ListaLivro* lista_livro, int codigo, char* novo_titulo, char* novo_autor, char* novo_ano_publicacao, int nova_quantidade_disponivel) {
+    ListaLivro* atual = lista_livro;
 
     while (atual != NULL) {
-        if (atual->livro->codigo == codigo) {
-            atual->livro->quantidade_disponivel = quantidade_disponivel;
-            atual->livro->quantidade_emprestada = quantidade_emprestada;
-            return lista;
+        if (atual->livro != NULL && atual->livro->codigo == codigo) {
+            if (nova_quantidade_disponivel < atual->livro->quantidade_emprestada) {
+                return 1; // invalido
+            }
+
+            if (novo_titulo) {
+                strncpy(atual->livro->titulo, novo_titulo, sizeof(atual->livro->titulo) - 1);
+                atual->livro->titulo[sizeof(atual->livro->titulo) - 1] = '\0';
+            }
+            if (novo_autor) {
+                strncpy(atual->livro->autor, novo_autor, sizeof(atual->livro->autor) - 1);
+                atual->livro->autor[sizeof(atual->livro->autor) - 1] = '\0';
+            }
+            if (novo_ano_publicacao) {
+                strncpy(atual->livro->ano_publicacao, novo_ano_publicacao, sizeof(atual->livro->ano_publicacao) - 1);
+                atual->livro->ano_publicacao[sizeof(atual->livro->ano_publicacao) - 1] = '\0';
+            }
+
+            atual->livro->quantidade_disponivel = nova_quantidade_disponivel;
+            return 0; // deu certo
         }
+        atual = atual->proximo;
     }
-    return lista;
+    return 1; // nao encontrou o livro
+}
+
+//Buscar livro por código
+Livro* buscar_livro(ListaLivro* lista_livro, int codigo) {
+    ListaLivro* atual = lista_livro;
+    while (atual != NULL) {
+        if (atual->livro != NULL && atual->livro->codigo == codigo) {
+            return atual->livro;
+        }
+        atual = atual->proximo;
+    }
+    return NULL;
+}
+
+//Buscar livro por nome
+Livro** buscar_livro_por_nome(ListaLivro* lista_livro, char* pesquisa) {
+    int count = 0;
+    ListaLivro* atual = lista_livro;
+    while (atual != NULL) {
+        if (atual->livro != NULL && strstr(atual->livro->titulo, pesquisa) != NULL) {
+            count++;
+        }
+        atual = atual->proximo;
+    }
+    if (count == 0) {
+        return NULL;
+    }
+    Livro** resultados = (Livro**)malloc((count + 1) * sizeof(Livro*));
+    if (resultados == NULL) {
+        printf("Erro ao alocar memória para resultados de busca.\n");
+        return NULL;
+    }
+    int index = 0;
+    atual = lista_livro;
+    while (atual != NULL) {
+        if (atual->livro != NULL && strstr(atual->livro->titulo, pesquisa) != NULL) {
+            resultados[index++] = atual->livro;
+        }
+        atual = atual->proximo;
+    }
+    resultados[index] = NULL; // terminador para facilitar iteração
+    return resultados;
 }
 
 //Listar livros
@@ -93,7 +175,18 @@ ListaLivro* listar_livros(ListaLivro* lista) {
     return lista;
 }
 
-
+//Liberar momória da lista de livros
+void liberar_lista_livro(ListaLivro* lista_livro) {
+    ListaLivro* atual = lista_livro;
+    while (atual != NULL) {
+        ListaLivro* temp = atual;
+        atual = atual->proximo;
+        if (temp->livro != NULL) {
+            free(temp->livro);
+        }
+        free(temp);
+    }
+}
 
 //int codigo, nome, autor, ano_publicacao, quantidade_disponivel, quantidade_emprestada
 
