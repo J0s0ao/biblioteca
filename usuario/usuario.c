@@ -97,6 +97,15 @@ Usuario* buscar_usuario(ListaUsuario* lista_usuario, int codigo) {
     return NULL;
 }
 
+void listar_usuarios(ListaUsuario* lista_usuario) {
+    ListaUsuario* atual = lista_usuario;
+
+    while (atual != NULL) {
+        printf("Código: %d, Nome: %s\n", atual->usuario->codigo, atual->usuario->nome);
+        atual = atual->proximo;
+    }
+}
+
 void listar_usuario(ListaUsuario* lista_usuario, int codigo) {
     ListaUsuario* atual = lista_usuario;
 
@@ -109,4 +118,42 @@ void listar_usuario(ListaUsuario* lista_usuario, int codigo) {
     }
 }
 
-Usuario** buscar_usuario_por_nome(ListaUsuario* lista_usuario, char* pesquisa);
+Usuario** buscar_usuario_por_nome(ListaUsuario* lista_usuario, char* pesquisa) {
+    if (lista_usuario == NULL || pesquisa == NULL) {
+        return NULL;
+    }
+
+    int quantidade = 0;
+    Usuario** resultados = (Usuario**)malloc(sizeof(Usuario*));
+    if (resultados == NULL) {
+        return NULL;
+    }
+
+    ListaUsuario* atual = lista_usuario;
+    while (atual != NULL) {
+        if (strstr(atual->usuario->nome, pesquisa) != NULL) {
+            Usuario** novo_resultados = (Usuario**)realloc(resultados, (quantidade + 2) * sizeof(Usuario*));
+            if (novo_resultados == NULL) {
+                free(resultados);
+                return NULL;
+            }
+            resultados = novo_resultados;
+            resultados[quantidade++] = atual->usuario;
+        }
+        atual = atual->proximo;
+    }
+
+    if (quantidade == 0) {
+        free(resultados);
+        return NULL;
+    }
+
+    resultados[quantidade] = NULL;
+    return resultados;
+}
+
+
+
+
+
+    
