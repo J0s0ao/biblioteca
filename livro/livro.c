@@ -64,7 +64,35 @@ ListaLivro* remover_livro(ListaLivro* lista, int codigo) {
 }
 
 //Editar livro
+ListaLivro* editar_livro(ListaLivro* lista, int codigo, char* titulo, char* autor, char* ano_publicacao, int quantidade_disponivel, int quantidade_emprestada) {
+    ListaLivro* atual = lista;
+
+    while (atual != NULL) {
+        if (atual->livro->codigo == codigo) {
+            atual->livro->quantidade_disponivel = quantidade_disponivel;
+            atual->livro->quantidade_emprestada = quantidade_emprestada;
+            return lista;
+        }
+    }
+    return lista;
+}
+
 //Listar livros
+ListaLivro* listar_livros(ListaLivro* lista) {
+    ListaLivro* atual = lista;
+    while (atual != NULL) {
+        printf("Código: %d\n", atual->livro->codigo);
+        printf("Título: %s\n", atual->livro->titulo);
+        printf("Autor: %s\n", atual->livro->autor);
+        printf("Ano de Publicação: %s\n", atual->livro->ano_publicacao);
+        printf("Quantidade Disponível: %d\n", atual->livro->quantidade_disponivel);
+        printf("Quantidade Emprestada: %d\n", atual->livro->quantidade_emprestada);
+        printf("-----------------------------\n");
+        atual = atual->proximo;
+    }
+    return lista;
+}
+
 
 
 //int codigo, nome, autor, ano_publicacao, quantidade_disponivel, quantidade_emprestada
