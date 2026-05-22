@@ -52,7 +52,7 @@ void liberar_lista_usuario(ListaUsuario* lista_usuario) {
     }
 }
 
-void remover_usuario(ListaUsuario* lista_usuario, int codigo) {
+ListaUsuario* remover_usuario(ListaUsuario* lista_usuario, int codigo) {
     ListaUsuario* anterior = NULL;
     ListaUsuario* atual = lista_usuario;
   
