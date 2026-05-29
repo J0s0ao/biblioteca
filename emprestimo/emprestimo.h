@@ -8,4 +8,5 @@ void libera_lista_emprestimo(ListaEmprestimo *lista_emprestimo);
 void finalizar_emprestimo(ListaEmprestimo *lista_emprestimo, int codigo);
 Emprestimo *buscar_emprestimo(ListaEmprestimo *lista_emprestimo, int codigo);
 Emprestimo **buscar_emprestimos_usuario(ListaEmprestimo *lista_emprestimo, int codigo_usuario, int apenas_pendentes);
+
 #endif

@@ -55,7 +55,7 @@ void libera_lista_emprestimo(ListaEmprestimo *lista_emprestimo) {
 }
 
 void finalizar_emprestimo(ListaEmprestimo *lista_emprestimo, int codigo) {
-    ListaEmprestimo* atual;
+    ListaEmprestimo* atual = lista_emprestimo;
 
     while (atual != NULL) {
         if (atual->emprestimo->codigo == codigo) {
@@ -67,7 +67,7 @@ void finalizar_emprestimo(ListaEmprestimo *lista_emprestimo, int codigo) {
 }
 
 Emprestimo *buscar_emprestimo(ListaEmprestimo *lista_emprestimo, int codigo) {
-    ListaEmprestimo* atual;
+    ListaEmprestimo* atual = lista_emprestimo;
 
     while (atual != NULL) {
         if (atual->emprestimo->codigo == codigo) {
