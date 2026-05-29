@@ -124,3 +124,37 @@ Emprestimo **buscar_emprestimos_usuario(ListaEmprestimo *lista_emprestimo, int c
 
     return resultado;
 }
+
+//Exibe os dados de um unico emprestimo
+void imprimir_emprestimo(const Emprestimo *emprestimo) {
+    if (emprestimo == NULL) {
+        printf("Emprestimo inexistente.\n");
+        return;
+    }
+    printf("Codigo: %d | Livro: %d | Usuario: %d | Data: %02d/%02d/%04d | Status: %s\n",
+           emprestimo->codigo, emprestimo->codigo_livro, emprestimo->codigo_usuario,
+           emprestimo->data.dia, emprestimo->data.mes, emprestimo->data.ano,
+           emprestimo->devolvido ? "Devolvido" : "Pendente");
+}
+
+//Exibe todos os emprestimos da lista
+void listar_emprestimos(ListaEmprestimo *lista_emprestimo) {
+    ListaEmprestimo *atual = lista_emprestimo;
+    if (atual == NULL) {
+        printf("Nenhum emprestimo registrado.\n");
+        return;
+    }
+    while (atual != NULL) {
+        imprimir_emprestimo(atual->emprestimo);
+        atual = atual->proximo;
+    }
+}
+
+//Getters usados pelo CLI (struct opaca fora deste arquivo)
+int emprestimo_get_codigo(const Emprestimo *emprestimo) {
+    return emprestimo ? emprestimo->codigo : -1;
+}
+
+int emprestimo_get_codigo_livro(const Emprestimo *emprestimo) {
+    return emprestimo ? emprestimo->codigo_livro : -1;
+}

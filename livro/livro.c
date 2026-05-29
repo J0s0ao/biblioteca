@@ -175,6 +175,47 @@ ListaLivro* listar_livros(ListaLivro* lista) {
     return lista;
 }
 
+//Exibe os dados de um unico livro
+void imprimir_livro(const Livro* livro) {
+    if (livro == NULL) {
+        printf("Livro inexistente.\n");
+        return;
+    }
+    printf("Código: %d\n", livro->codigo);
+    printf("Título: %s\n", livro->titulo);
+    printf("Autor: %s\n", livro->autor);
+    printf("Ano de Publicação: %s\n", livro->ano_publicacao);
+    printf("Quantidade Disponível: %d\n", livro->quantidade_disponivel);
+    printf("Quantidade Emprestada: %d\n", livro->quantidade_emprestada);
+}
+
+//Quantos exemplares estao disponiveis para um livro
+int livro_get_quantidade_disponivel(const Livro* livro) {
+    return livro ? livro->quantidade_disponivel : 0;
+}
+
+//Empresta um exemplar: disponivel--, emprestada++. Retorna 0 em sucesso, 1 se indisponivel/nao encontrado.
+int livro_emprestar(ListaLivro* lista_livro, int codigo) {
+    Livro* l = buscar_livro(lista_livro, codigo);
+    if (l == NULL || l->quantidade_disponivel <= 0) {
+        return 1;
+    }
+    l->quantidade_disponivel--;
+    l->quantidade_emprestada++;
+    return 0;
+}
+
+//Devolve um exemplar: disponivel++, emprestada--. Retorna 0 em sucesso, 1 se nada emprestado/nao encontrado.
+int livro_devolver(ListaLivro* lista_livro, int codigo) {
+    Livro* l = buscar_livro(lista_livro, codigo);
+    if (l == NULL || l->quantidade_emprestada <= 0) {
+        return 1;
+    }
+    l->quantidade_disponivel++;
+    l->quantidade_emprestada--;
+    return 0;
+}
+
 //Liberar momória da lista de livros
 void liberar_lista_livro(ListaLivro* lista_livro) {
     ListaLivro* atual = lista_livro;

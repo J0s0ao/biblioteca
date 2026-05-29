@@ -11,6 +11,11 @@ Usuario* buscar_usuario(ListaUsuario* lista_usuario, int codigo);
 Usuario** buscar_usuario_por_nome(ListaUsuario* lista_usuario, char* pesquisa);
 ListaUsuario* adicionar_usuario(ListaUsuario* lista_usuario, int codigo, char* nome, char* senha);
 
+// Helpers de interface (usados pelo CLI em main.c)
+void listar_usuarios(ListaUsuario* lista_usuario);            // lista todos os usuarios
+void listar_usuario(ListaUsuario* lista_usuario, int codigo); // lista um usuario por codigo
+void imprimir_usuario(const Usuario* usuario);                // exibe os dados de um usuario
+
 
 
 

@@ -19,4 +19,10 @@ Livro** buscar_livro_por_nome(ListaLivro* lista_livro, char* pesquisa);//feito
 
 ListaLivro* listar_livros(ListaLivro* lista_livro); //feito
 
+// Helpers de interface (usados pelo CLI em main.c)
+void imprimir_livro(const Livro* livro);                 // exibe os dados de um unico livro
+int livro_get_quantidade_disponivel(const Livro* livro); // quantos exemplares estao disponiveis
+int livro_emprestar(ListaLivro* lista_livro, int codigo); // disponivel--, emprestada++. 0=ok, 1=indisponivel
+int livro_devolver(ListaLivro* lista_livro, int codigo);  // disponivel++, emprestada--. 0=ok, 1=erro
+
 #endif

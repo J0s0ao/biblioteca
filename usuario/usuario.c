@@ -65,11 +65,12 @@ ListaUsuario* remover_usuario(ListaUsuario* lista_usuario, int codigo) {
             }
             free(atual->usuario);
             free(atual);
-            return;
+            return lista_usuario;
         }
         anterior = atual;
         atual = atual->proximo;
     }
+    return lista_usuario;
 }
 
 void editar_usuario(ListaUsuario* lista_usuario, int codigo, char* novo_nome, char* nova_senha) {
@@ -116,6 +117,15 @@ void listar_usuario(ListaUsuario* lista_usuario, int codigo) {
         }
         atual = atual->proximo;
     }
+}
+
+//Exibe os dados de um unico usuario
+void imprimir_usuario(const Usuario* usuario) {
+    if (usuario == NULL) {
+        printf("Usuário inexistente.\n");
+        return;
+    }
+    printf("Código: %d, Nome: %s\n", usuario->codigo, usuario->nome);
 }
 
 Usuario** buscar_usuario_por_nome(ListaUsuario* lista_usuario, char* pesquisa) {
