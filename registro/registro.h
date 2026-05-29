@@ -1,18 +1,33 @@
-#ifndef PILHA_H
-#define PILHA_H
+#ifndef REGISTRO_H
+#define REGISTRO_H
 
-typedef enum {
-    OP_LIVRO_CADASTRADO,
-    OP_LIVRO_REMOVIDO,
-    OP_RETIRADA,
-    OP_DEVOLUCAO
-} TipoOperacao;
+typedef struct NoRegistro {
+    int codigo;
+    char tipo[32];
+    char operacao[32];
+    char descricao[128];
+    struct NoRegistro *anterior;
+} NoRegistro;
 
-typedef struct no_historico NoHistorico;
+typedef struct {
+    NoRegistro *topo;
+    int tamanho;
+    int proximo_codigo;
+} PilhaRegistro;
 
-NoHistorico* empilhar(NoHistorico* topo, TipoOperacao tipo, int codigo_livro);
-NoHistorico* desempilhar(NoHistorico* topo);
-void imprimir_historico(NoHistorico* topo);
-void liberar_historico(NoHistorico* topo);
+PilhaRegistro *criar_pilha_registro(void);
+void destruir_pilha_registro(PilhaRegistro *pilha);
+
+int empilhar_registro(PilhaRegistro *pilha,
+                      const char *tipo,
+                      const char *operacao,
+                      const char *descricao);
+
+NoRegistro *desempilhar_registro(PilhaRegistro *pilha);
+NoRegistro *peek_registro(const PilhaRegistro *pilha);
+int pilha_registro_vazia(const PilhaRegistro *pilha);
+
+void exibir_topo_registro(const PilhaRegistro *pilha);
+void listar_todos_registros(const PilhaRegistro *pilha);
 
 #endif
